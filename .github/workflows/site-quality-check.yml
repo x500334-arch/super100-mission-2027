@@ -1,0 +1,38 @@
+name: Website Quality Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '*.js'
+      - '*.html'
+      - '*.css'
+      - 'manifest.webmanifest'
+      - 'pdf/**'
+      - 'scripts/qa-site.cjs'
+      - '.github/workflows/site-quality-check.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: s100-website-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Login, Admin, PWA and mobile smoke tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install DOM test dependency
+        run: npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund jsdom@26
+      - name: Run automated website audit
+        run: node scripts/qa-site.cjs
