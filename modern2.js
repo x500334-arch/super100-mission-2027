@@ -6,6 +6,7 @@ const one=(q,root=document)=>root.querySelector(q);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function saved(key){try{return JSON.parse(localStorage.getItem(key)||"{}")||{}}catch{return {}}}
 function istDay(d){const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day}
+function localDay(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function focusRender(){
 const node=one('#modern-focus-clock');if(!node)return;
 const t=running?Math.max(0,Math.ceil((until-Date.now())/1000)):remaining;
@@ -27,10 +28,10 @@ const uid=user.id;
 if(account&&account!==uid){running=false;clearInterval(timerId);timerId=null;remaining=1500}account=uid;
 if(one('#modern-dashboard'))return;
 const practice=saved('practice:v1:'+uid),planKey='smartplanner:v1:'+uid,plan=saved(planKey);
-const day=istDay(new Date()),dates=new Set(),firstAttempts=[],correctAttempts=[];
+const day=typeof plannerDay==='function'?plannerDay():istDay(new Date()),dates=new Set(),firstAttempts=[],correctAttempts=[];
 Object.entries(practice).forEach(([id,record])=>{Object.entries(record?.days||{}).forEach(([date,ok])=>{dates.add(date);firstAttempts.push(id+'|'+date);if(ok===true)correctAttempts.push(id+'|'+date)})});
 if(plan.checked?.length&&plan.day===day)dates.add(day);
-let streak=0,cursor=dates.has(day)?day:istDay(new Date(Date.now()-86400000));
+let streak=0;const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);let cursor=dates.has(day)?day:(typeof plannerDay==='function'?localDay(yesterday):istDay(yesterday));
 while(dates.has(cursor)&&streak<10000){streak++;const a=cursor.split('-').map(Number);cursor=new Date(Date.UTC(a[0],a[1]-1,a[2]-1,12)).toISOString().slice(0,10)}
 const done=progress.filter(p=>p.done).length,tests=attempts.length,xp=done*25+correctAttempts.length*3+tests*15;
 const earned=[["🌱","First chapter",done>=1],["📚","7 chapters",done>=7],["🏁","All 14",done>=14],["⚡","10 practice",firstAttempts.length>=10],["🎯","80% accuracy",firstAttempts.length>=20&&correctAttempts.length/firstAttempts.length>=.8],["🔥","3-day streak",streak>=3],["🏆","3 tests",tests>=3]];
