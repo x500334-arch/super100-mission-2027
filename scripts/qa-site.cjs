@@ -71,53 +71,86 @@ function injectCrypto(w){Object.defineProperty(w,"crypto",{value:webcrypto,confi
   assert.equal(w.document.getElementById("registration-form").hidden,true);
   w.close();
  });
- await check("Admin approval cards work without scrolling 7 columns",async()=>{
-  const tr=(id,name,approved)=>'<tr data-name="'+name+'" data-status="'+(approved?"approved":"pending")+'"><td><button onclick="window.__reports.push(\''+id+'\')">'+name+'</button></td>'+
-   '<td>2/14</td><td>1</td><td>10/20</td><td>50%</td><td>'+(approved?"Approved":"Pending")+'</td>'+
-   '<td><button onclick="window.__approvals.push(\''+id+'\')">'+(approved?"Block":"Approve")+'</button></td></tr>';
-  const html='<!doctype html><html><body class="mobile-drawer-open">'+
-   '<div class="workbody"><h1>Admin control / प्रबंधन</h1>'+
+ await check("Pending, Approved and Blocked appear in strictly separate sections",async()=>{
+  const html='<!doctype html><html><body class="mobile-drawer-open"><div class="workbody">'+
+   '<h1>Admin control / प्रबंधन</h1>'+
    '<section class="panel"><h2>Admin overview / छात्र विश्लेषण</h2>'+
-   '<label>Search students <input id="adminsearch"></label><label>Status<select id="adminstatus"><option value="all">All</option><option value="approved">Approved</option><option value="pending">Pending</option></select></label>'+
-   '<div style="overflow-x:auto"><table><tbody id="adminrows">'+tr("pending-student","Aman Kumar",false)+tr("approved-student","Test Student",true)+'</tbody></table></div>'+
-   '<button id="adminSummaryCsv">CSV</button><h3>Test participation</h3><p>Summary</p></section>'+
-   '<section class="panel"><h2>Test scheduling</h2></section><h2>Students</h2><article>Duplicate cards</article>'+
+   '<label>Search students <input id="adminsearch"></label>'+
+   '<label>Status <select id="adminstatus"><option value="all">All</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="blocked">Blocked</option></select></label>'+
+   '<div><table><tbody id="adminrows"></tbody></table></div>'+
+   '<button id="adminSummaryCsv">CSV</button></section>'+
+   '<section class="panel"><h2>Test scheduling</h2></section>'+
    '<button id="csv">Export</button>'+
-   '<section class="panel"><h2>Create test</h2></section><section class="panel"><h2>Add question</h2></section>'+
-   '<section class="panel"><h2>Bulk question upload</h2></section><section class="panel"><h2>Add learning resource</h2></section>'+
+   '<section class="panel"><h2>Create test</h2></section>'+
+   '<section class="panel"><h2>Add question</h2></section>'+
+   '<section class="panel"><h2>Bulk question upload</h2></section>'+
+   '<section class="panel"><h2>Add learning resource</h2></section>'+
    '<section class="panel"><h2>Announcements</h2></section></div></body></html>';
-  const d=dom(html),w=d.window;
-  w.__approvals=[];w.__reports=[];
-  w.profile={admin:true,approved:true};w.user={id:"admin-owner"};
+  const d=dom(html),w=d.window;w.profile={admin:true,approved:true,blocked:false};w.user={id:"admin-owner"};
   w.Mobile4={close(){w.document.body.classList.remove("mobile-drawer-open")}};
   w.matchMedia=()=>({matches:true});
-  w.confirm=()=>true;
+  w.__actions=[];w.__reports=[];
+  w.run=fn=>async()=>fn();
+  w.setStudentStatus=(id,next)=>w.__actions.push([id,next]);
+  w.adminStudent=id=>w.__reports.push(id);
   w.eval(file("admin3.js"));
   w.Admin3.mount({users:[
-   {id:"admin-owner",username:"Admin",admin:true,approved:true},
-   {id:"pending-student",username:"Aman Kumar",admin:false,approved:false},
-   {id:"approved-student",username:"Test Student",admin:false,approved:true}],
-   attempts:[],progress:[],ts:[]});
+   {id:"admin-owner",username:"Admin",admin:true,approved:true,blocked:false},
+   {id:"pending-student",username:"Aman Kumar",admin:false,approved:false,blocked:false},
+   {id:"approved-student",username:"Approved Student",admin:false,approved:true,blocked:false},
+   {id:"blocked-student",username:"Blocked Student",admin:false,approved:false,blocked:true}
+  ],attempts:[],progress:[],ts:[]});
   const doc=w.document;
-  assert.ok(doc.querySelector(".workbody").classList.contains("admin3-page"),"admin styles enabled");
-  assert.equal(doc.body.classList.contains("mobile-drawer-open"),false,"body unlocked");
-  assert.equal(doc.querySelectorAll(".admin3-mobile-student-card").length,2);
-  assert.equal(doc.querySelectorAll(".workbody > article").length,0,"no duplicate old cards");
-  assert.equal(doc.querySelectorAll(".admin3-mobile-student-card")[0].querySelector("strong").textContent,"Aman Kumar","pending first");
-  const studentTab=doc.getElementById("admin3-tab-students");
-  studentTab.click();
-  assert.equal(doc.getElementById("admin3-pane-students").hidden,false);
-  const approve=doc.querySelector(".admin3-mobile-student-approve.approve");
-  approve.click();
-  assert.equal(w.__approvals[0],"pending-student","calls original approval action");
-  const report=doc.querySelector(".admin3-mobile-student-report");report.click();
-  assert.equal(w.__reports[0],"pending-student");
-  // Existing filter + our phone card filter must stay in sync.
-  const search=doc.getElementById("adminsearch");
-  search.oninput=()=>doc.querySelectorAll("#adminrows tr").forEach(row=>row.hidden=!row.dataset.name.toLowerCase().includes(search.value.toLowerCase()));
-  search.value="Aman";search.dispatchEvent(new w.Event("input",{bubbles:true}));
-  await new Promise(resolve=>setTimeout(resolve,0));
-  assert.equal([...doc.querySelectorAll(".admin3-mobile-student-card")].filter(x=>!x.hidden).length,1);
+  assert.ok(doc.querySelector(".workbody").classList.contains("admin3-page"));
+  assert.equal(doc.body.classList.contains("mobile-drawer-open"),false);
+  const tabs=["pending","approved","blocked"];
+  for(const key of tabs){
+   doc.getElementById("admin3-tab-"+key).click();
+   assert.equal(doc.getElementById("admin3-pane-"+key).hidden,false);
+   assert.equal(doc.querySelectorAll("#admin3-pane-"+key+" .admin3-person-card").length,1);
+   assert.equal(doc.querySelector("#admin3-pane-"+key+" .admin3-person-badge").textContent,
+    key==="pending"?"Awaiting review":key==="approved"?"Active":"Blocked");
+  }
+  const pending=doc.getElementById("admin3-pane-pending");
+  assert.ok(pending.querySelector(".admin3-action-approve"));
+  assert.equal(pending.querySelector(".admin3-action-block"),null,"No block action in pending requests");
+  const approved=doc.getElementById("admin3-pane-approved");
+  assert.ok(approved.querySelector(".admin3-action-block"));
+  assert.equal(approved.querySelector(".admin3-action-approve"),null,"No approval action in approved users");
+  const blocked=doc.getElementById("admin3-pane-blocked");
+  assert.ok(blocked.querySelector(".admin3-action-restore"));
+  assert.equal(blocked.querySelector(".admin3-action-approve"),null,"Blocked cannot be approved directly");
+  pending.querySelector(".admin3-action-approve").click();
+  approved.querySelector(".admin3-action-block").click();
+  blocked.querySelector(".admin3-action-restore").click();
+  await new Promise(done=>setTimeout(done,0));
+  assert.deepEqual(w.__actions,[["pending-student","approved"],["approved-student","blocked"],["blocked-student","pending"]]);
+  pending.querySelector(".admin3-action-report").click();
+  await new Promise(done=>setTimeout(done,0));
+  assert.deepEqual(w.__reports,["pending-student"]);
+  // Each section filters independently without affecting the other two.
+  const search=pending.querySelector(".admin3-roster-search");
+  search.value="not a student";search.dispatchEvent(new w.Event("input",{bubbles:true}));
+  assert.equal(pending.querySelector(".admin3-person-card").hidden,true);
+  assert.equal(approved.querySelector(".admin3-person-card").hidden,false);
+  w.close();
+ });
+ await check("Missing blocked-column migration disables blocking without mixing accounts",()=>{
+  const d=dom('<!doctype html><html><body><div class="workbody"><h1>Admin control / प्रबंधन</h1>'+
+   '<section class="panel"><h2>Admin overview</h2></section></div></body></html>');
+  const w=d.window;w.profile={admin:true,approved:true};w.user={id:"admin-owner"};
+  w.matchMedia=()=>({matches:true});w.Mobile4={close(){}};
+  w.eval(file("admin3.js"));
+  w.Admin3.mount({users:[
+   {id:"admin-owner",username:"admin",admin:true,approved:true},
+   {id:"a",username:"Aman",admin:false,approved:false},
+   {id:"b",username:"Bina",admin:false,approved:true}
+  ],attempts:[],progress:[],ts:[]});
+  const doc=w.document;
+  assert.equal(doc.querySelectorAll("#admin3-pane-pending .admin3-person-card").length,1);
+  assert.equal(doc.querySelectorAll("#admin3-pane-blocked .admin3-person-card").length,0);
+  assert.equal(doc.querySelector("#admin3-pane-approved .admin3-action-block").disabled,true);
+  assert.ok(doc.querySelector("#admin3-pane-blocked .admin3-migration-warning"));
   w.close();
  });
  await check("Phone approval dialog can confirm/cancel without body scroll locks",async()=>{
