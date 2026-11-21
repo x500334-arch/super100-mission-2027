@@ -116,6 +116,7 @@ function injectCrypto(w){Object.defineProperty(w,"crypto",{value:webcrypto,confi
   const search=doc.getElementById("adminsearch");
   search.oninput=()=>doc.querySelectorAll("#adminrows tr").forEach(row=>row.hidden=!row.dataset.name.toLowerCase().includes(search.value.toLowerCase()));
   search.value="Aman";search.dispatchEvent(new w.Event("input",{bubbles:true}));
+  await new Promise(resolve=>setTimeout(resolve,0));
   assert.equal([...doc.querySelectorAll(".admin3-mobile-student-card")].filter(x=>!x.hidden).length,1);
   w.close();
  });
