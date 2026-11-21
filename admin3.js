@@ -6,6 +6,8 @@ function mount(data){
  if(!profile?.admin||!profile?.approved)return;
  const area=document.querySelector(".workbody");
  if(!area||document.querySelector("#admin3-root"))return;
+ // Missing class previously disabled 40+ scoped admin CSS rules on mobile.
+ area.classList.add("admin3-page");
  // Recover from stale drawer state that can lock the entire phone viewport.
  window.Mobile4?.close();
  document.body.classList.remove("mobile-drawer-open");
