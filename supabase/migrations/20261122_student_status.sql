@@ -1,80 +1,66 @@
--- Super 100 Mission 2027: separate Pending, Approved, and Blocked student access.
--- Run once in YOUR Supabase project's SQL Editor (with project-owner approval).
--- This migration is not automatically executed by GitHub Pages.
--- IMPORTANT: before this change, profiles.approved=false represented BOTH
--- never-approved and manually-blocked users; old blocked records CANNOT be
--- reliably identified or migrated automatically.
-BEGIN;
+-- Applied to Supabase project bbujondhglcrihoksmio on 2026-11-22 (IST).
+-- Migration history: 20261121232517_separate_student_blocked_status_20261122
+-- Reference copy of the already-applied migration. DO NOT run it a second time.
+-- Old profiles.approved=false records could mean either pending or previously
+-- blocked; their old state cannot be inferred. No historic records were reclassified.
+
+CREATE SCHEMA IF NOT EXISTS app_private;
+REVOKE ALL ON SCHEMA app_private FROM PUBLIC;
+REVOKE ALL ON SCHEMA app_private FROM anon;
+REVOKE ALL ON SCHEMA app_private FROM authenticated;
 
 ALTER TABLE public.profiles
-  ADD COLUMN IF NOT EXISTS blocked boolean NOT NULL DEFAULT false;
+ ADD COLUMN IF NOT EXISTS blocked boolean NOT NULL DEFAULT false;
 
--- Approved accounts must never be blocked simultaneously.
-UPDATE public.profiles SET blocked=false WHERE approved=true AND blocked=true;
+ALTER TABLE public.profiles
+ ADD CONSTRAINT profiles_not_approved_and_blocked
+ CHECK (NOT (approved AND blocked));
 
--- OPTIONAL, BEFORE creating the guard trigger: if you have VERIFIED IDs of
--- accounts that were blocked under the old boolean-only design, mark them:
--- UPDATE public.profiles SET blocked=true
---   WHERE approved=false AND id IN ('verified-uuid-1', 'verified-uuid-2');
--- Do NOT run the example with placeholder IDs; review each student first.
-
-DO $migration$
-BEGIN
-  IF NOT EXISTS(
-    SELECT 1 FROM pg_constraint
-    WHERE conname='profiles_no_approved_blocked'
-      AND conrelid='public.profiles'::regclass
-  ) THEN
-    ALTER TABLE public.profiles
-      ADD CONSTRAINT profiles_no_approved_blocked
-      CHECK (NOT (COALESCE(approved,false) AND blocked));
-  END IF;
-END $migration$;
-
--- Update security: even if an existing "profiles" update RLS policy is broad,
--- only a currently-approved admin may modify access status.
-CREATE OR REPLACE FUNCTION public.guard_student_access_status()
+CREATE OR REPLACE FUNCTION app_private.guard_student_status_transition()
 RETURNS trigger
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path=public,pg_temp
-AS $guard$
+LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = pg_catalog, public, pg_temp
+AS $status$
+DECLARE actor uuid;
 BEGIN
-  IF COALESCE(NEW.approved,false) AND COALESCE(NEW.blocked,false) THEN
-    RAISE EXCEPTION 'A student cannot be approved and blocked simultaneously';
+ IF NEW.approved AND NEW.blocked THEN
+  RAISE EXCEPTION 'An account cannot be approved and blocked simultaneously';
+ END IF;
+ IF NEW.approved IS DISTINCT FROM OLD.approved
+    OR NEW.blocked IS DISTINCT FROM OLD.blocked THEN
+  IF OLD.admin OR NEW.admin THEN
+   RAISE EXCEPTION 'Student management cannot change administrator account status';
   END IF;
-
-  IF NEW.approved IS DISTINCT FROM OLD.approved
-     OR NEW.blocked IS DISTINCT FROM OLD.blocked THEN
-    IF OLD.admin THEN
-      RAISE EXCEPTION 'Admin account access must not be changed from student management';
-    END IF;
-
-    IF auth.uid() IS NULL OR NOT EXISTS(
-      SELECT 1 FROM public.profiles p
-      WHERE p.id=auth.uid()
-        AND p.admin=true
-        AND p.approved=true
-        AND p.blocked=false
-    ) THEN
-      RAISE EXCEPTION 'Only an approved administrator can change student access status';
-    END IF;
+  actor := auth.uid();
+  IF actor IS NULL OR NOT EXISTS (
+   SELECT 1 FROM public.profiles p
+   WHERE p.id=actor AND p.admin=true AND p.approved=true AND p.blocked=false
+  ) THEN
+   RAISE EXCEPTION 'Only an approved administrator may change student status';
   END IF;
-  RETURN NEW;
+  IF OLD.blocked THEN
+   IF NEW.approved OR NEW.blocked THEN
+    RAISE EXCEPTION 'Blocked students must return to pending before approval';
+   END IF;
+  ELSIF OLD.approved THEN
+   IF NEW.approved OR NOT NEW.blocked THEN
+    RAISE EXCEPTION 'Approved students may only transition to blocked';
+   END IF;
+  ELSE
+   IF NOT NEW.approved OR NEW.blocked THEN
+    RAISE EXCEPTION 'Pending requests may only transition to approved';
+   END IF;
+  END IF;
+ END IF;
+ RETURN NEW;
 END;
-$guard$;
+$status$;
 
-DROP TRIGGER IF EXISTS guard_student_access_status_update
-  ON public.profiles;
+REVOKE ALL ON FUNCTION app_private.guard_student_status_transition() FROM PUBLIC;
+REVOKE ALL ON FUNCTION app_private.guard_student_status_transition() FROM anon;
+REVOKE ALL ON FUNCTION app_private.guard_student_status_transition() FROM authenticated;
 
-CREATE TRIGGER guard_student_access_status_update
-BEFORE UPDATE ON public.profiles
-FOR EACH ROW EXECUTE FUNCTION public.guard_student_access_status();
-
-COMMIT;
-
--- Verification (run as a separate query after successful migration):
--- SELECT username, approved, blocked
--- FROM public.profiles
--- WHERE admin=false
--- ORDER BY blocked DESC, approved ASC, username;
+DROP TRIGGER IF EXISTS guard_student_status_transition ON public.profiles;
+CREATE TRIGGER guard_student_status_transition
+BEFORE UPDATE OF approved, blocked ON public.profiles
+FOR EACH ROW EXECUTE FUNCTION app_private.guard_student_status_transition();
