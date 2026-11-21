@@ -25,7 +25,7 @@ async function usernameEmail(value){
  const stem=canonical.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,11)||'student';
  return 'u_'+stem+'_'+hex.slice(0,16)+'@students.example.com';
 }
-const displayUsername=()=>user?.user_metadata?.username||profile?.username||'Student';
+const displayUsername=()=>user?.user_metadata?.display_name||user?.user_metadata?.username||profile?.username||'Student';
 function login(){
  show('<section class="panel"><h1>Mission 2027</h1><p>Mathematics preparation portal / गणित अभ्यास</p><input id="username" name="username" autocomplete="username" autocapitalize="words" maxlength="100" placeholder="Username / नाम (CAPS, spaces, हिंदी allowed)"><small>Capital letters, spaces, Hindi names and symbols are allowed. Username login ignores letter case.</small><input id="password" type="password" autocomplete="current-password" placeholder="Password / पासवर्ड"><button id="signin">Login / लॉगिन</button><button id="signup">Request account / पंजीकरण</button></section>');
  bind('signin',async()=>{
@@ -36,7 +36,7 @@ function login(){
  bind('signup',async()=>{
   const display=accountUsername(val('username'));
   const address=await usernameEmail(display);
-  await req(db.auth.signUp({email:address,password:val('password'),options:{data:{username:display}}}));
+  await req(db.auth.signUp({email:address,password:val('password'),options:{data:{username:address.split('@')[0],display_name:display}}}));
   alert('Account requested. Admin approval required.');
   await load()
  })
