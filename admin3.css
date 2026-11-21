@@ -236,3 +236,50 @@
 .admin3-confirm-yes{color:#fff;border:1px solid var(--accent);background:var(--accent)}
 .admin3-confirm-actions button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 @media(max-width:360px){.admin3-confirm-box{padding:19px 15px}.admin3-confirm-actions button{font-size:11px}}
+
+
+/* Access management — requests and blocked accounts MUST NOT share a list. */
+.admin3-roster-title{display:flex;flex-direction:column;gap:5px;margin:12px 2px 16px}
+.admin3-roster-title h2{font-size:clamp(22px,2.6vw,28px);line-height:1.18;letter-spacing:-.045em;color:var(--ink);margin:0}
+.admin3-roster-title p{font-size:12px;color:var(--muted);line-height:1.55;margin:0;max-width:640px}
+.admin3-roster-search{width:min(100%,490px);min-height:46px;display:block;margin:0 0 17px;padding:10px 14px;
+ background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:11px;font-size:16px}
+.admin3-roster{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:13px;margin:0 0 23px}
+.admin3-person-card{display:flex;flex-direction:column;gap:9px;min-width:0;min-height:148px;padding:20px;
+ border-radius:16px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--m3-card-shadow)}
+.admin3-person-card[hidden],.admin3-roster-empty[hidden]{display:none!important}
+.admin3-person-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;flex-wrap:wrap}
+.admin3-person-card-top strong{font-size:16px;color:var(--ink);line-height:1.4;overflow-wrap:anywhere}
+.admin3-person-badge{font-size:10px;line-height:1.1;font-weight:820;padding:8px 10px;border-radius:999px;white-space:nowrap}
+.admin3-person-badge.pending{background:color-mix(in srgb,#d5a447 19%,var(--panel));color:color-mix(in srgb,#a97622 90%,var(--ink))}
+.admin3-person-badge.approved{background:color-mix(in srgb,#1c9c87 13%,var(--panel));color:color-mix(in srgb,#168e76 75%,var(--ink))}
+.admin3-person-badge.blocked{background:color-mix(in srgb,#cc7474 14%,var(--panel));color:color-mix(in srgb,#b74d4d 74%,var(--ink))}
+.admin3-person-info{font-size:11px;color:var(--muted);line-height:1.5;margin:0 0 5px}
+.admin3-person-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:auto}
+.admin3-person-actions button{display:flex;align-items:center;justify-content:center;min-height:44px;
+ border-radius:10px;padding:9px 9px;margin:0!important;font-size:12px;font-weight:830;line-height:1.25;
+ background:var(--panel);border:1px solid var(--line);color:var(--ink);cursor:pointer}
+.admin3-person-actions button:disabled{opacity:.5;cursor:not-allowed}
+.admin3-person-actions .admin3-action-report{background:var(--tint);color:var(--accent)}
+.admin3-person-actions .admin3-action-approve{background:var(--accent);color:#fff;border-color:var(--accent)}
+.admin3-person-actions .admin3-action-block{background:color-mix(in srgb,#bd5e5e 10%,var(--panel));color:color-mix(in srgb,#b65050 80%,var(--ink));border-color:color-mix(in srgb,#bd5e5e 35%,var(--line))}
+.admin3-person-actions .admin3-action-restore{background:var(--accent);color:#fff;border-color:var(--accent)}
+.admin3-roster-empty{grid-column:1/-1;text-align:center;padding:33px 20px;border:1px dashed var(--line);
+ border-radius:13px;font-size:13px;background:var(--panel);color:var(--muted)}
+.admin3-migration-warning{padding:13px 15px;border:1px solid color-mix(in srgb,#b57f3e 35%,var(--line));
+ border-left:3px solid color-mix(in srgb,#b57f3e 85%,var(--line));
+ border-radius:9px;background:color-mix(in srgb,#d4a857 10%,var(--panel));
+ color:var(--ink);font-size:12px;line-height:1.6;margin:0 0 17px}
+.admin3-tabbar [data-tab="pending"][aria-selected="true"]{background:var(--accent)}
+.admin3-tabbar [data-tab="blocked"][aria-selected="true"]{background:color-mix(in srgb,#bf6666 70%,var(--accent))}
+@media(max-width:850px){.admin3-roster{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:900px){
+ .admin3-roster-title{margin:7px 0 13px}
+ .admin3-roster-title h2{font-size:23px}
+ .admin3-person-card{min-height:0;padding:16px;border-radius:13px}
+ .admin3-person-actions button{min-height:47px;font-size:12px;touch-action:manipulation}
+ .admin3-roster-search{max-width:100%}
+ .admin3-roster{gap:10px}
+ .admin3-tabbar button{flex:0 0 auto!important}
+}
+@media(max-width:365px){.admin3-person-actions button{font-size:11px;padding:9px 6px}}
