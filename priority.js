@@ -128,7 +128,8 @@ function mount(progress){
   teaser.querySelector("#priority-quick-open").onclick=()=>host.scrollIntoView({behavior:"smooth",block:"start"});
  }
 
- let filter="all",sorting="observed";
+ let filter=window.matchMedia("(max-width: 600px)").matches?"high":"all",sorting="observed";
+ host.querySelectorAll("[data-tier]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.tier===filter)));
  function draw(){
   if(!host.isConnected||!user||user.id!==uid)return;
   let arr=groups.filter(g=>filter==="all"||g.tier===filter);
