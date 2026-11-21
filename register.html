@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Create your Super 100 Mission 2027 student account and request admin approval.">
+<meta name="theme-color" content="#f3f7fe" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1526" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Super 100">
+<link rel="icon" type="image/svg+xml" href="./icons/app-icon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./style.css?v=auth-v1">
+<link rel="stylesheet" href="./modern3.css?v=auth-v1">
+<link rel="stylesheet" href="./mobile4.css?v=auth-v1">
+<link rel="stylesheet" href="./pwa.css?v=auth-v1">
+<link rel="stylesheet" href="./auth-pages.css?v=auth-v1">
+<title>Create Account · Super 100 Mission 2027</title>
+</head>
+<body>
+<header>
+  <b>SUPER<span>100</span> <small>MISSION 2027</small></b>
+  <a class="header-link" href="./index.html">← Student Login</a>
+  <button id="pwa-install" type="button" hidden aria-label="Install Super 100 as an app">⬇ Install App</button>
+</header>
+<main class="auth-entry">
+<div class="auth-page">
+  <section class="auth-intro" aria-label="Super 100 registration information">
+    <div class="auth-intro-brand">
+      <img src="./icons/app-192.png" width="56" height="56" alt="">
+      <span>SUPER 100 <small>MISSION 2027</small></span>
+    </div>
+    <div class="auth-intro-content">
+      <span class="auth-eyebrow">WELCOME TO THE MISSION</span>
+      <h2>Your journey <em>starts here.</em></h2>
+      <p>Create your student account, get admin approval, and begin learning with chapter notes, tracked practice and tests.</p>
+    </div>
+    <div class="auth-intro-benefits">
+      <span>✓ 14 Mathematics Chapters</span>
+      <span>✓ Tests & Practice</span>
+      <span>✓ Smart Progress</span>
+    </div>
+    <small class="auth-intro-footer">One account. Your progress, results and revision space.</small>
+  </section>
+
+  <section class="auth-card" aria-labelledby="registration-title">
+    <span class="auth-card-kicker">✦ NEW STUDENT</span>
+    <h1 id="registration-title">Create your account</h1>
+    <p class="auth-subtitle">Register / नया अकाउंट बनाएं — fill in your details to request access.</p>
+    <form id="registration-form" class="auth-form" autocomplete="on">
+      <label class="auth-field" for="full-name">
+        <span>Full name / पूरा नाम</span>
+        <input id="full-name" name="name" required minlength="2" maxlength="100" autocomplete="name" placeholder="e.g. Aman Kumar">
+      </label>
+      <label class="auth-field" for="reg-username">
+        <span>Username / यूज़रनेम</span>
+        <input id="reg-username" name="username" required maxlength="100" autocomplete="username" autocapitalize="words" spellcheck="false" placeholder="e.g. Aman Kumar">
+        <small>Capital letters, spaces, Hindi and symbols are allowed.</small>
+      </label>
+      <div class="auth-field">
+        <label for="reg-password"><span>Password / पासवर्ड</span></label>
+        <div class="auth-password-control">
+          <input id="reg-password" name="new-password" type="password" required minlength="8" maxlength="128" autocomplete="new-password" placeholder="Minimum 8 characters">
+          <button class="auth-password-toggle" type="button" data-password-toggle="reg-password" aria-label="Show password">Show</button>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label for="reg-confirm"><span>Confirm password / दोबारा पासवर्ड</span></label>
+        <div class="auth-password-control">
+          <input id="reg-confirm" name="confirm-password" type="password" required minlength="8" maxlength="128" autocomplete="new-password" placeholder="Re-enter your password">
+          <button class="auth-password-toggle" type="button" data-password-toggle="reg-confirm" aria-label="Show confirm password">Show</button>
+        </div>
+      </div>
+      <p class="auth-register-note"><span>ⓘ</span>Registration requires admin approval before you can access tests and your learning dashboard.</p>
+      <p id="reg-message" class="auth-feedback" role="alert" aria-live="polite" hidden></p>
+      <button id="register-submit" class="auth-submit" type="submit">Create account / रजिस्टर करें <span aria-hidden="true">→</span></button>
+    </form>
+    <section id="reg-success" class="auth-success" hidden role="status" aria-live="polite">
+      <span class="auth-success-icon" aria-hidden="true">✓</span>
+      <h2>Registration requested!</h2>
+      <p>Your account request has been submitted. Admin approval is required before access. After approval, sign in with your username and password.</p>
+      <a href="./index.html">Go to Login / लॉगिन करें</a>
+    </section>
+    <div class="auth-switch">Already have an account? <a href="./index.html">Log in / लॉगिन</a></div>
+  </section>
+</div>
+</main>
+<noscript><p style="text-align:center;padding:25px">JavaScript is required to register.</p></noscript>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script src="./auth-names.js?v=auth-v1"></script>
+<script src="./register.js?v=auth-v1"></script>
+<script src="./pwa.js?v=auth-v1"></script>
+</body>
+</html>
