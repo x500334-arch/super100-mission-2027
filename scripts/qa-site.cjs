@@ -137,6 +137,33 @@ function injectCrypto(w){Object.defineProperty(w,"crypto",{value:webcrypto,confi
   assert.equal(w.document.body.classList.contains("mobile-drawer-open"),false);
   w.close();
  });
+ await check("Mobile drawer opens/closes without leaving body scroll locked",()=>{
+  const html='<!doctype html><body><div class="workspace">'+
+   '<aside class="sidebar"><nav><button id="sidebar-home" type="button">Home</button></nav></aside>'+
+   '<div class="workbody"><button class="menutoggle" type="button">Menu</button></div></div>'+
+   '<div class="mobile-drawer-shade"></div>'+
+   '<nav class="mobile-bottom-nav"><button data-tab="home" type="button">Home</button>'+
+   '<button data-tab="priority" type="button">Priority</button>'+
+   '<button data-mobile-more type="button">More</button></nav></body>';
+  const d=dom(html),w=d.window;
+  w.matchMedia=()=>({matches:false,addEventListener(){}});
+  w.eval(file("mobile4.js"));
+  w.Mobile4.init();
+  const more=w.document.querySelector("[data-mobile-more]"),
+        side=w.document.querySelector(".sidebar");
+  more.click();
+  assert.equal(w.document.body.classList.contains("mobile-drawer-open"),true);
+  assert.equal(side.classList.contains("mobile-open"),true);
+  w.document.querySelector(".mobile-drawer-close").click();
+  assert.equal(w.document.body.classList.contains("mobile-drawer-open"),false);
+  assert.equal(side.classList.contains("mobile-open"),false);
+  more.click();
+  w.document.getElementById("sidebar-home").click();
+  assert.equal(w.document.body.classList.contains("mobile-drawer-open"),false);
+  w.Mobile4.setActive("priority");
+  assert.equal(w.document.querySelector('[data-tab="priority"]').getAttribute("aria-current"),"page");
+  w.close();
+ });
  await check("PWA caches no private data or answer/PDF responses",()=>{
   const source=file("sw.js");
   assert.ok(source.includes('req.method!=="GET"'));
