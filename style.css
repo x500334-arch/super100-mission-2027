@@ -28,3 +28,14 @@ table{display:block;max-width:100%;overflow-x:auto;overscroll-behavior-inline:co
 :root{--header-height:64px}header{flex-wrap:wrap;padding:8px 12px}header b{flex:1 1 125px;margin-right:0}header small{display:block;font-size:9px}header button{padding:8px;margin:0;font-size:12px}main{padding:12px 12px 48px}.workbody{padding:12px 12px 48px}.topline{gap:8px;margin-bottom:16px;padding-bottom:10px;font-size:12px}.userchip{padding:6px 10px}.dashgrid{grid-template-columns:minmax(0,1fr);gap:12px}.grid{grid-template-columns:minmax(0,1fr);gap:12px}.dashhero{padding:18px}.heroart{display:none}article,.panel{padding:15px;margin:10px 0}button{padding:10px 12px}.sectionhead{display:flex;align-items:flex-start}.scorechart{height:145px}.ring{width:108px;height:108px}h1{margin:18px 0 10px}h2{margin:8px 0 12px} }
 @media screen and (max-width:350px){.workspace nav{grid-template-columns:1fr}.topline>span:not(.userchip){display:none}}
 @media (prefers-reduced-motion:reduce){button{transition:none}}
+
+
+/* Chapter PDFs embedded in the existing NOTES panel */
+.chapter-pdf-box{margin-top:8px}
+.chapter-pdf-box>p{margin:8px 0}
+.chapter-pdf-actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.chapter-pdf-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border:1px solid var(--accent);border-radius:10px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);font-weight:650;text-decoration:none}
+.chapter-pdf-actions a:hover,.chapter-pdf-actions a:focus-visible{background:color-mix(in srgb,var(--accent) 25%,transparent)}
+.chapter-pdf-frame{display:block;width:100%;height:620px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:12px}
+@media(max-width:650px){.chapter-pdf-frame{height:440px}.chapter-pdf-actions a{width:100%}}
+@media print{.chapter-pdf-frame,.chapter-pdf-actions{display:none!important}}
