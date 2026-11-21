@@ -208,3 +208,31 @@
  .admin3-no-students{padding:22px;text-align:center;border:1px dashed var(--line);border-radius:13px;color:var(--muted);font-size:12px}
 }
 @media(min-width:901px){.admin3-mobile-students{display:none!important}}
+
+
+/* Confirmation layer is independent of the scrolling document; never
+   permanently sets body overflow or touch-action. */
+.admin3-confirm-shade{
+ position:fixed;inset:0;z-index:120;
+ display:flex;align-items:center;justify-content:center;
+ padding:20px max(16px,env(safe-area-inset-left)) calc(20px + env(safe-area-inset-bottom));
+ background:rgba(5,20,45,.68);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)
+}
+.admin3-confirm-box{
+ display:flex;flex-direction:column;align-items:center;text-align:center;
+ max-width:420px;width:100%;padding:26px 21px 22px;border-radius:19px;
+ background:var(--panel);border:1px solid var(--line);
+ color:var(--ink);box-shadow:0 22px 70px rgba(0,0,0,.26);
+ max-height:calc(100dvh - 45px);overflow:auto;overscroll-behavior:contain
+}
+.admin3-confirm-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;
+ background:var(--tint);color:var(--accent);font-size:25px;font-weight:850}
+.admin3-confirm-box h2{font-size:21px;letter-spacing:-.035em;line-height:1.2;margin:15px 0 9px;color:var(--ink)}
+.admin3-confirm-box p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 19px}
+.admin3-confirm-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:100%}
+.admin3-confirm-actions button{min-height:47px;margin:0!important;padding:10px!important;
+ border-radius:11px;font-size:12px;font-weight:800;touch-action:manipulation}
+.admin3-confirm-cancel{color:var(--ink);border:1px solid var(--line);background:var(--tint)}
+.admin3-confirm-yes{color:#fff;border:1px solid var(--accent);background:var(--accent)}
+.admin3-confirm-actions button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media(max-width:360px){.admin3-confirm-box{padding:19px 15px}.admin3-confirm-actions button{font-size:11px}}
