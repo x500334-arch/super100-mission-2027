@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Public Notes | Super 100 Mission 2027</title><link rel="stylesheet" href="./style.css">
+<style>.notes-wrap{max-width:1150px;margin:auto;padding:28px 18px 70px}.note-hero{background:linear-gradient(115deg,#445ab6,#637ce1);color:white;border-radius:20px;padding:28px}.note-hero h1{margin:8px 0}.note-hero p{color:#f3f5ff}.note-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px;margin-top:20px}.note-card{display:flex;flex-direction:column;gap:10px;margin:0!important}.note-card h3{font-size:17px;margin:0;flex:1}.note-card button{width:100%;margin:0}.note-reader{scroll-margin-top:90px;margin-top:30px}.note-pane{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;margin:14px 0}.note-pane p{white-space:pre-wrap;overflow-wrap:anywhere}.note-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:16px 0}.note-actions a{display:inline-block;border:1px solid var(--accent);border-radius:9px;padding:9px 13px;text-decoration:none;font-weight:600}.note-actions a[hidden]{display:none!important}.note-action-status{font-size:13px;color:var(--muted)}.note-answer{background:#738cff1f;border-radius:10px;padding:13px;margin-top:10px}.note-reader h2{line-height:1.4}.note-hint{color:var(--muted)}@media print{header,.note-hero,.note-grid,.note-hint,.note-actions,button{display:none!important}body{background:#fff!important;color:#111!important}.notes-wrap{max-width:none;padding:0}.note-reader{display:block!important;margin:0}.note-pane{background:#fff!important;border:0;border-bottom:1px solid #ddd;color:#111;padding:10px 0;break-inside:avoid}.note-pane p,.note-answer{color:#111!important}}</style></head><body>
+<header><b>SUPER<span>100</span> <small>MISSION 2027</small></b><a href="./index.html">Dashboard / डैशबोर्ड</a></header>
+<main class="notes-wrap"><section class="note-hero"><small>FREE PUBLIC LIBRARY • NO LOGIN REQUIRED</small><h1>Mathematics Notes / गणित नोट्स</h1><p>All 14 chapters · English + हिंदी · Solved examples · Practice questions</p></section>
+<p class="note-hint">Anyone can read these revision notes without signing in. Select a chapter below. Save as PDF prints the selected chapter. The original separate PDFs will also appear here after their files are uploaded to the repository.</p><section id="chapters" class="note-grid" aria-label="Chapters"></section><section id="reader" class="note-reader" hidden></section></main>
+<script src="./content.js"></script><script>
+"use strict";
+const names=["Average / औसत","Speed, Time and Distance / गति, समय और दूरी","Profit, Loss and Discount / लाभ, हानि और छूट","Mensuration (2D and 3D) / क्षेत्रमिति","Ratio, Proportion and Alligation / अनुपात, समानुपात और मिश्रण","Simple and Compound Interest / साधारण और चक्रवृद्धि ब्याज","Time and Work / समय और कार्य","Pipes and Cisterns / नल और टंकी","Percentage / प्रतिशत","Geometry / ज्यामिति","Simplification (BODMAS) / सरलीकरण","Quadratic Equations / द्विघात समीकरण","Trigonometry / त्रिकोणमिति","Algebraic Expressions / बीजीय व्यंजक"];
+const pdfs=["01_Average.pdf","02_Speed_Time_Distance.pdf","03_Profit_Loss_Discount.pdf","04_Mensuration.pdf","05_Ratio_Proportion_Alligation.pdf","06_Simple_Compound_Interest.pdf","07_Time_Work.pdf","08_Pipes_Cisterns.pdf","09_Percentage.pdf","10_Geometry.pdf","11_BODMAS.pdf","12_Quadratic_Equations.pdf","13_Trigonometry.pdf","14_Algebraic_Expressions.pdf"];
+const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const chapters=document.getElementById("chapters"),reader=document.getElementById("reader");
+names.forEach((n,i)=>{let el=document.createElement("article");el.className="note-card";el.innerHTML='<small>CHAPTER '+String(i+1).padStart(2,"0")+'</small><h3>'+safe(n)+'</h3><small>Hindi + English</small><button type="button">View Notes / नोट्स देखें</button>';el.querySelector("button").onclick=()=>openChapter(i);chapters.append(el)});
+async function checkPdf(i){
+ const current=String(i),url="./pdf/"+pdfs[i];
+ try{let r=await fetch(url,{method:"HEAD"});if(r.ok && (r.headers.get("content-type")||"").includes("pdf") && reader.dataset.chapter===current){
+  for(const id of ["pdfView","pdfDownload"]){let e=document.getElementById(id);e.href=url;e.hidden=false;}
+  document.getElementById("pdfStatus").textContent="Original PDF available / मूल PDF उपलब्ध है";return;
+ }}catch(e){}
+ if(reader.dataset.chapter===current)document.getElementById("pdfStatus").textContent="Separate PDF not uploaded yet. Use Save as PDF to get these revision notes.";
+}
+function openChapter(i){
+ let m=material[i],adv=advancedNotes[i];
+ if(!m||!adv){reader.hidden=false;reader.textContent="This chapter is temporarily unavailable.";return}
+ reader.dataset.chapter=String(i);
+ const examples=adv[2].map((x,j)=>'<section class="note-pane"><b>Example '+(j+1)+' / उदाहरण '+(j+1)+'</b><p>'+safe(x)+'</p></section>').join("");
+ const opts=m[5].map((x,j)=>'<div>'+String.fromCharCode(65+j)+'. '+safe(x)+'</div>').join("");
+ reader.innerHTML='<h2>Chapter '+(i+1)+' — '+safe(names[i])+'</h2>'+
+ '<div class="note-actions"><button id="printNotes" type="button">Save as PDF / PDF बनाएँ</button><a id="pdfView" target="_blank" rel="noopener" hidden>View Original PDF</a><a id="pdfDownload" download="'+safe(pdfs[i])+'" hidden>Download Original PDF</a><span id="pdfStatus" class="note-action-status">Checking files...</span></div>'+
+ '<section class="note-pane"><h3>Core concepts / मुख्य अवधारणाएँ</h3><p>'+safe(m[0])+'</p><p>'+safe(m[1])+'</p></section>'+
+ '<section class="note-pane"><h3>Important principles / महत्वपूर्ण बातें</h3><p>'+safe(m[2])+'</p><p>'+safe(m[3])+'</p></section>'+
+ '<section class="note-pane"><h3>Advanced revision / उच्च स्तरीय पुनरावृत्ति</h3><p>'+safe(adv[0])+'</p><p>'+safe(adv[1])+'</p></section>'+
+ '<h3>Worked examples / हल किए हुए उदाहरण</h3>'+examples+
+ '<section class="note-pane"><h3>Practice / अभ्यास</h3><p>'+safe(m[4])+'</p>'+opts+'<div class="note-answer"><b>Answer / उत्तर: '+String.fromCharCode(65+Number(m[6]))+' · '+safe(m[5][m[6]])+'</b><p>'+safe(m[7])+'</p></div></section>';
+ document.getElementById("printNotes").onclick=()=>window.print();
+ reader.hidden=false;history.replaceState(null,"","#chapter-"+(i+1));reader.scrollIntoView({block:"start",behavior:"smooth"});checkPdf(i);
+}
+let match=location.hash.match(/^#chapter-(\d+)$/);if(match&&+match[1]>=1&&+match[1]<=14)openChapter(+match[1]-1);
+</script></body></html>
