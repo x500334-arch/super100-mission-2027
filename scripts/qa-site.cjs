@@ -6,7 +6,7 @@ const {JSDOM}=require("jsdom");
 const base=path.resolve(__dirname,".."),file=p=>fs.readFileSync(path.join(base,p),"utf8");
 let passed=0;
 function check(name,fn){return Promise.resolve().then(fn).then(()=>{console.log("PASS",name);passed++})}
-function dom(html){return new JSDOM(html,{url:"https://x500334-arch.github.io/super100-mission-2027/",runScripts:"outside-only",pretendToBeVisual:true})}
+function dom(html){return new JSDOM(html,{url:"https://x500334-arch.github.io/super100-mission-2027/",runScripts:"dangerously",pretendToBeVisual:true})}
 function injectCrypto(w){Object.defineProperty(w,"crypto",{value:webcrypto,configurable:true});w.TextEncoder=TextEncoder}
 (async()=>{
  await check("JavaScript parses across every frontend module",()=>{
