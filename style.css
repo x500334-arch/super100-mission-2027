@@ -39,3 +39,19 @@ table{display:block;max-width:100%;overflow-x:auto;overscroll-behavior-inline:co
 .chapter-pdf-frame{display:block;width:100%;height:620px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:12px}
 @media(max-width:650px){.chapter-pdf-frame{height:440px}.chapter-pdf-actions a{width:100%}}
 @media print{.chapter-pdf-frame,.chapter-pdf-actions{display:none!important}}
+
+
+/* Bilingual formulas, attributed practice, and evidence-based chapter analysis */
+.chapter-extra{margin-top:12px}
+.chapter-extra-math{padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--accent) 6%,var(--panel))}
+.chapter-extra-math p{white-space:pre-wrap;color:var(--ink)}
+.chapter-question{margin:12px 0;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--accent) 5%,var(--panel))}
+.chapter-question summary{cursor:pointer;color:var(--ink);line-height:1.6}
+.chapter-question li{padding:4px}
+.chapter-answer{padding:12px;border-radius:9px;background:color-mix(in srgb,var(--accent) 13%,var(--panel))}
+.chapter-answer p{margin:5px 0}
+.chapter-trend{display:flex;gap:12px;margin:14px 0}
+.chapter-trend>div{flex:0 1 145px;display:flex;flex-direction:column;gap:2px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.chapter-trend strong{font-size:25px;color:var(--accent)}
+.chapter-source{font-size:12px;line-height:1.5;opacity:.85}
+@media print{.chapter-question{break-inside:avoid}.chapter-trend{display:flex}}
