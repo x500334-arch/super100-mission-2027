@@ -237,3 +237,17 @@ img,svg,video,canvas,iframe{max-width:100%}
  .note-action-status{font-size:11px!important;line-height:1.5}
 }
 @media(max-width:360px){.note-grid{grid-template-columns:minmax(0,1fr)!important}.note-card h3{font-size:15px!important}}
+
+
+@media(max-width:900px){
+ .workspace .sidebar .mobile-drawer-close{
+  display:flex!important;align-items:center;justify-content:center;
+  margin:0 0 11px auto!important;
+  min-height:40px!important;min-width:90px;
+  padding:9px 14px!important;border-radius:10px!important;
+  color:var(--ink)!important;background:var(--tint)!important;
+  border:1px solid var(--line)!important;font-size:12px;font-weight:820!important;
+ }
+ .mobile-drawer-shade.visible{cursor:pointer}
+}
+@media(min-width:901px){.workspace .sidebar .mobile-drawer-close{display:none!important}}
