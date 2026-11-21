@@ -40,6 +40,15 @@ function init(){
  if(hamburger){hamburger.onclick=toggle;hamburger.setAttribute("aria-expanded","false");hamburger.setAttribute("aria-controls","mobile-sidebar")}
  aside.id="mobile-sidebar";
  aside.setAttribute("aria-label","More navigation options");
+ let closeButton=aside.querySelector(".mobile-drawer-close");
+ if(!closeButton){
+  closeButton=document.createElement("button");
+  closeButton.type="button";closeButton.className="mobile-drawer-close";
+  closeButton.setAttribute("aria-label","Close navigation menu");
+  closeButton.textContent="✕ Close";
+  aside.prepend(closeButton);
+ }
+ closeButton.onclick=()=>{close();moreButton.focus()};
  shade?.addEventListener("click",close);
  aside.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",close));
  const title=document.querySelector(".mobile-bottom-nav");
