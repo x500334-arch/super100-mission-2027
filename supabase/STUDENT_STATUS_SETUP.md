@@ -1,3 +1,5 @@
+> **Status (22 Nov 2026): Applied successfully.** The connected production Supabase project already has the `blocked` column, access-guard trigger and database constraint. Migration history: `20261121232517_separate_student_blocked_status_20261122`. **Do not apply the same SQL again.** This guide remains useful when setting up a different Supabase project.
+
 # Separate student approval and blocked status — one-time Supabase setup
 
 The website now uses three distinct student states:
