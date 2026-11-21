@@ -79,8 +79,8 @@ main:has(.workspace){max-width:none;padding:0!important}
 .workspace nav button span{display:inline-flex;align-items:center;justify-content:center;
  background:var(--tint);border-radius:9px;width:30px;height:30px;color:var(--accent);font-size:15px;flex-shrink:0}
 .workspace nav button:hover{background:var(--tint)!important;color:var(--ink);transform:translateX(2px)}
-.workspace nav button:first-child{color:var(--accent)}
-.workspace nav button:first-child span{background:var(--accent);color:#fff}
+.workspace:has(.m3-toprow) nav button:first-child{color:var(--accent)}
+.workspace:has(.m3-toprow) nav button:first-child span{background:var(--accent);color:#fff}
 .workbody{padding:24px clamp(18px,2.9vw,48px) 70px;min-width:0;width:100%;max-width:1650px;margin:0 auto}
 .topline{display:flex;align-items:center;gap:13px;padding:0 0 20px;margin:0 0 23px;border-bottom:1px solid var(--line);font-size:13px}
 .topline:before{content:'◈';display:inline-grid;place-items:center;width:30px;height:30px;
@@ -277,4 +277,49 @@ main:has(.workspace){max-width:none;padding:0!important}
 @media print{
  .m3-toprow .dashhero{box-shadow:none!important}
  .modern-dashboard,.m3-chapter-block .modern-chapter-links{display:none!important}
+}
+
+/* Interior pages — consistent spacing, readable resources and results */
+.workbody > h1{font-size:clamp(25px,3vw,37px);letter-spacing:-.045em;line-height:1.18;margin:8px 0 24px}
+.workbody > .panel,.workbody > article{
+ border:1px solid var(--line);border-radius:18px;
+ background:var(--panel);box-shadow:var(--m3-card-shadow);padding:24px
+}
+.workbody > .panel h2{letter-spacing:-.027em;margin:0 0 14px}
+.workbody > .grid:not(.m3-chapters){grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.workbody > .grid:not(.m3-chapters) article{border-radius:16px;border:1px solid var(--line);box-shadow:var(--m3-card-shadow)}
+.workbody button:not(.modern-focus-buttons button),.workbody a{outline-offset:3px}
+.workbody button:hover{box-shadow:0 6px 17px color-mix(in srgb,var(--accent) 10%,transparent)}
+.workbody select,.workbody input:not([type=checkbox]):not([type=radio]),.workbody textarea{
+ background:color-mix(in srgb,var(--tint) 40%,var(--panel));
+ border:1px solid var(--line);border-radius:11px;color:var(--ink)
+}
+.workbody table{border-collapse:separate;border-spacing:0;width:100%}
+.workbody table th{font-weight:850;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.workbody table td,.workbody table th{padding:13px;border-bottom:1px solid var(--line)}
+.workbody table tr:nth-child(even){background:color-mix(in srgb,var(--tint) 35%,transparent)}
+.workbody .chapter-pdf-box{
+ background:var(--tint);border:1px solid var(--line);
+ border-radius:15px;padding:16px;margin:12px 0
+}
+.workbody .chapter-pdf-actions a{
+ background:var(--panel);color:var(--accent);
+ border-color:var(--line);border-radius:10px;font-size:12px
+}
+.workbody .chapter-pdf-actions a:first-child{
+ background:var(--accent);color:white!important;border-color:var(--accent)
+}
+.workbody .chapter-pdf-frame{background:white;border:1px solid var(--line);border-radius:12px}
+.workbody .chapter-extra-math{
+ background:var(--tint);border:1px solid var(--line);border-radius:12px;padding:17px
+}
+.workbody .chapter-question{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.workbody .chapter-question[open]{border-color:var(--accent)}
+.workbody .chapter-question summary{font-weight:750}
+.workbody progress{height:9px;accent-color:var(--accent)}
+.m3-widget-error{padding:17px;margin:14px 0;border:1px solid #dba874;background:#fff7e9;border-radius:12px;color:#704010;font-size:12px}
+@media(prefers-color-scheme:dark){.m3-widget-error{background:#392c18;color:#ffe7bf;border-color:#8e6b3e}}
+@media(max-width:720px){
+ .workbody > .panel,.workbody > article{padding:16px}
+ .workbody > .grid:not(.m3-chapters){grid-template-columns:1fr}
 }
