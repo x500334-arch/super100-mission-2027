@@ -5,7 +5,7 @@ let timerId=null,remaining=1500,until=0,running=false,account=null;
 const one=(q,root=document)=>root.querySelector(q);
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function saved(key){try{return JSON.parse(localStorage.getItem(key)||"{}")||{}}catch{return {}}}
-function istDay(d){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(d).replaceAll("/","-")}
+function istDay(d){const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day}
 function focusRender(){
 const node=one('#modern-focus-clock');if(!node)return;
 const t=running?Math.max(0,Math.ceil((until-Date.now())/1000)):remaining;
