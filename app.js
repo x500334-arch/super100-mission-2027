@@ -7,39 +7,52 @@ const app=document.querySelector('#app'), esc=x=>String(x??'').replace(/[&<>"']/
    a stable, collision-resistant alias (not an unsafe email with spaces).
    Case and repeated whitespace are ignored for login; original spelling
    is kept as Supabase Auth user metadata for friendly on-screen display. */
-function accountUsername(value){
- const name=String(value??'').normalize('NFKC').trim().replace(/\s+/gu,' ');
- if(!name)throw Error('Please enter a username / यूज़रनेम लिखें');
- if([...name].length>100)throw Error('Username can contain up to 100 characters.');
- if(/[\u0000-\u001F\u007F]/u.test(name))throw Error('Username cannot contain control characters.');
- return name;
-}
-async function usernameEmail(value){
- const name=accountUsername(value),canonical=name.toLocaleLowerCase('en');
- if(/^[a-z0-9_]{3,30}$/.test(canonical))return canonical+'@students.example.com';
- // Prefix/slug is readable to admins if profile is derived from email;
- // 16 hex digits of SHA-256 prevent ordinary alias collisions.
- if(!globalThis.crypto?.subtle)throw Error('Secure HTTPS connection needed to sign in with this username.');
- const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical));
- const hex=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
- const stem=canonical.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,11)||'student';
- return 'u_'+stem+'_'+hex.slice(0,16)+'@students.example.com';
-}
+const {accountUsername,usernameEmail}=window.Super100AuthNames;
 const displayUsername=()=>user?.user_metadata?.display_name||user?.user_metadata?.username||profile?.username||'Student';
 function login(){
- show('<section class="panel"><h1>Mission 2027</h1><p>Mathematics preparation portal / गणित अभ्यास</p><input id="username" name="username" autocomplete="username" autocapitalize="words" maxlength="100" placeholder="Username / नाम (CAPS, spaces, हिंदी allowed)"><small>Capital letters, spaces, Hindi names and symbols are allowed. Username login ignores letter case.</small><input id="password" type="password" autocomplete="current-password" placeholder="Password / पासवर्ड"><button id="signin">Login / लॉगिन</button><button id="signup">Request account / पंजीकरण</button></section>');
- bind('signin',async()=>{
-  const address=await usernameEmail(val('username'));
-  await req(db.auth.signInWithPassword({email:address,password:val('password')}));
-  await load()
+ show('<div class="auth-page">'+
+ '<section class="auth-intro" aria-label="Welcome to Super 100 Mission">'+
+ '<div class="auth-intro-brand"><img src="./icons/app-192.png" width="56" height="56" alt=""><span>SUPER 100<small>MISSION 2027</small></span></div>'+
+ '<div class="auth-intro-content"><span class="auth-eyebrow">WELCOME BACK, CHAMPION</span><h2>Keep building <em>your future.</em></h2><p>Continue your preparation with smart practice, chapter notes, weekly challenges and test analytics.</p></div>'+
+ '<div class="auth-intro-benefits"><span>✓ High-Priority Topics</span><span>✓ Smart Analytics</span><span>✓ Study Streak</span></div>'+
+ '<small class="auth-intro-footer">Haryana Super 100 · Your learning workspace</small></section>'+
+ '<section class="auth-card"><span class="auth-card-kicker">✦ STUDENT LOGIN</span><h1>Welcome back!</h1>'+
+ '<p class="auth-subtitle">Login / लॉगिन — enter your username and password to continue.</p>'+
+ '<form id="login-form" class="auth-form">'+
+ '<label class="auth-field" for="username"><span>Username / यूज़रनेम</span>'+
+ '<input id="username" name="username" required maxlength="100" autocomplete="username" autocapitalize="words" spellcheck="false" placeholder="Enter your username">'+
+ '<small>CAPITAL, small letters, spaces and Hindi are supported.</small></label>'+
+ '<div class="auth-field"><label for="password"><span>Password / पासवर्ड</span></label>'+
+ '<div class="auth-password-control"><input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Enter your password">'+
+ '<button id="login-password-toggle" class="auth-password-toggle" type="button" aria-label="Show password">Show</button></div></div>'+
+ '<p id="login-message" class="auth-feedback" role="alert" aria-live="polite" hidden></p>'+
+ '<button class="auth-submit" id="signin" type="submit">Login / लॉगिन <span aria-hidden="true">→</span></button>'+
+ '</form>'+
+ '<div class="auth-switch">New student? / नए छात्र हैं? <a href="./register.html">Create Account / रजिस्टर करें</a></div>'+
+ '</section></div>');
+ const button=el("signin"),form=el("login-form"),error=el("login-message");
+ el("login-password-toggle").onclick=()=>{
+  const input=el("password"),showPassword=input.type==="password";
+  input.type=showPassword?"text":"password";
+  const toggle=el("login-password-toggle");toggle.textContent=showPassword?"Hide":"Show";
+  toggle.setAttribute("aria-label",showPassword?"Hide password":"Show password");
+ };
+ form.addEventListener("submit",async event=>{
+  event.preventDefault();
+  if(button.disabled||!form.reportValidity())return;
+  error.hidden=true;error.textContent="";
+  button.disabled=true;button.textContent="Signing in...";
+  try{
+   const address=await usernameEmail(val("username"));
+   await req(db.auth.signInWithPassword({email:address,password:val("password")}));
+   await load();
+  }catch(e){
+   error.dataset.error="true";
+   error.textContent=e?.message||"Unable to sign in. Please try again.";
+   error.hidden=false;
+   button.disabled=false;button.textContent="Login / लॉगिन →";
+  }
  });
- bind('signup',async()=>{
-  const display=accountUsername(val('username'));
-  const address=await usernameEmail(display);
-  await req(db.auth.signUp({email:address,password:val('password'),options:{data:{username:address.split('@')[0],display_name:display}}}));
-  alert('Account requested. Admin approval required.');
-  await load()
- })
 }
 async function load(){const s=await req(db.auth.getSession());user=s.session?.user;el('logout').hidden=!user;if(!user)return login();profile=await req(db.from('profiles').select('*').eq('id',user.id).single());if(!profile.approved)return show('<h1>Approval pending / अनुमति बाकी है</h1><p>Contact your administrator.</p><button onclick="load()">Refresh</button>');await home()}
 function shell(content){
