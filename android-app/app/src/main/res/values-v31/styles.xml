@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Super100" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">@color/s100_blue</item>
+        <item name="android:statusBarColor">@color/s100_navy</item>
+        <item name="android:navigationBarColor">@color/s100_navy</item>
+        <item name="android:windowBackground">@color/s100_light</item>
+        <item name="android:windowSplashScreenBackground">@color/s100_navy</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/s100_navy</item>
+    </style>
+</resources>

@@ -1,0 +1,32 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'io.github.x500334arch.super100mission2027'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'io.github.x500334arch.super100mission2027'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            // This source project intentionally does not contain any private
+            // production signing keys. Configure signing before a store release.
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
