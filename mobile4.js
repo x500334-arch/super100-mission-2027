@@ -62,5 +62,12 @@ function init(){
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.body.classList.contains("mobile-drawer-open")){close();more?.focus()}});
 desktopQuery.addEventListener?.("change",()=>{if(desktopQuery.matches)close()});
-window.Mobile4={init,close};
+function setActive(tab){
+ const bar=document.querySelector(".mobile-bottom-nav");if(!bar)return;
+ bar.dataset.current=tab;
+ bar.querySelectorAll("[data-tab]").forEach(b=>{
+  if(b.dataset.tab===tab)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")
+ });
+}
+window.Mobile4={init,close,setActive};
 })();
