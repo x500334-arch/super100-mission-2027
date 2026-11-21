@@ -1,7 +1,17 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Public Notes | Super 100 Mission 2027</title><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./mobile4.css?v=mobile4-20261122-final">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">  <meta name="application-name" content="Super 100 Mission 2027">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Super 100">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f3f7fe" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a1526" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icons/app-icon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./pwa.css?v=pwa1">
+<title>Public Notes | Super 100 Mission 2027</title><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./mobile4.css?v=mobile4-20261122-final">
 <style>.notes-wrap{max-width:1150px;margin:auto;padding:28px 18px 70px}.note-hero{background:var(--hero-gradient);color:var(--hero-ink);border-radius:20px;padding:28px}.note-hero h1{margin:8px 0}.note-hero p{color:var(--hero-muted)}.note-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px;margin-top:20px}.note-card{display:flex;flex-direction:column;gap:10px;margin:0!important}.note-card h3{font-size:17px;margin:0;flex:1}.note-card button{width:100%;margin:0}.note-reader{scroll-margin-top:90px;margin-top:30px}.note-pane{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;margin:14px 0}.note-pane p{white-space:pre-wrap;overflow-wrap:anywhere}.note-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:16px 0}.note-actions a{display:inline-block;border:1px solid var(--accent);border-radius:9px;padding:9px 13px;text-decoration:none;font-weight:600}.note-actions a[hidden]{display:none!important}.note-action-status{font-size:13px;color:var(--muted)}.note-answer{background:var(--tint);border-radius:10px;padding:13px;margin-top:10px}.note-reader h2{line-height:1.4}.note-hint{color:var(--muted)}@media print{header,.note-hero,.note-grid,.note-hint,.note-actions,button{display:none!important}body{background:#fff!important;color:#111!important}.notes-wrap{max-width:none;padding:0}.note-reader{display:block!important;margin:0}.note-pane{background:#fff!important;border:0;border-bottom:1px solid #ddd;color:#111;padding:10px 0;break-inside:avoid}.note-pane p,.note-answer{color:#111!important}}</style></head><body>
-<header><b>SUPER<span>100</span> <small>MISSION 2027</small></b><a href="./index.html" class="header-link">Dashboard / डैशबोर्ड</a></header>
+<header><b>SUPER<span>100</span> <small>MISSION 2027</small></b><a href="./index.html" class="header-link">Dashboard / डैशबोर्ड</a><button id="pwa-install" type="button" hidden aria-label="Install Super 100 as an app">⬇ Install App</button></header>
 <main class="notes-wrap"><section class="note-hero"><small>FREE PUBLIC LIBRARY • NO LOGIN REQUIRED</small><h1>Mathematics Notes / गणित नोट्स</h1><p>All 14 chapters · English + हिंदी · Solved examples · Practice questions</p></section>
 <p class="note-hint">Anyone can read these revision notes without signing in. Select a chapter below. Save as PDF prints the selected chapter. The original separate PDFs will also appear here after their files are uploaded to the repository.</p><section id="chapters" class="note-grid" aria-label="Chapters"></section><section id="reader" class="note-reader" hidden></section></main>
 <script src="./content.js"></script><script>
@@ -36,4 +46,4 @@ function openChapter(i){
  reader.hidden=false;history.replaceState(null,"","#chapter-"+(i+1));reader.scrollIntoView({block:"start",behavior:"smooth"});checkPdf(i);
 }
 let match=location.hash.match(/^#chapter-(\d+)$/);if(match&&+match[1]>=1&&+match[1]<=14)openChapter(+match[1]-1);
-</script></body></html>
+</script><script src="./pwa.js?v=pwa1"></script></body></html>

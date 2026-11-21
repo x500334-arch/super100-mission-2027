@@ -1,0 +1,45 @@
+{
+  "id": "/super100-mission-2027/",
+  "name": "Super 100 Mission 2027",
+  "short_name": "Super 100",
+  "description": "Haryana Super 100 Mathematics preparation — chapter notes, practice, analytics and study planning.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#0c244b",
+  "theme_color": "#1759a6",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "./icons/app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mathematics Notes",
+      "short_name": "Notes",
+      "url": "./notes.html",
+      "description": "Browse bilingual chapter notes",
+      "icons": [
+        {
+          "src": "./icons/app-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
