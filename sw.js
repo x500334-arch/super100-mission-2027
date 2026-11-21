@@ -52,9 +52,10 @@ self.addEventListener("fetch",event=>{
     const keys=await cache.keys();
     if(keys.length>70){
      const keep=new Set(PRECACHE);
+     let excess=keys.length-70;
      for(const old of keys){
-      if(keys.length<=70)break;
-      if(!keep.has(old.url)){await cache.delete(old);keys.pop();}
+      if(excess<=0)break;
+      if(!keep.has(old.url)&&await cache.delete(old))excess--;
      }
     }
    }
