@@ -175,5 +175,52 @@ function mount(data){
  activate(lastTab);
 }
 function escapeText(x){return String(x??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
-window.Admin3={mount};
+/* In-app confirmation avoids native WebView JS confirm popups trapping phone scroll.
+   No auth/approval query is changed: app.js still owns the Supabase update. */
+let activeConfirmation=null;
+function confirmApproval(message){
+ if(!window.matchMedia("(max-width: 900px)").matches)return Promise.resolve(window.confirm(message));
+ if(activeConfirmation)return activeConfirmation;
+ activeConfirmation=new Promise(resolve=>{
+  const previousFocus=document.activeElement;
+  const shade=document.createElement("div");shade.className="admin3-confirm-shade";
+  shade.id="admin3-confirm-shade";
+  const dialog=document.createElement("section");dialog.className="admin3-confirm-box";
+  dialog.setAttribute("role","alertdialog");dialog.setAttribute("aria-modal","true");
+  dialog.setAttribute("aria-labelledby","admin3-confirm-title");
+  dialog.setAttribute("aria-describedby","admin3-confirm-description");
+  const icon=document.createElement("span");icon.className="admin3-confirm-icon";icon.textContent="✓";
+  const heading=document.createElement("h2");heading.id="admin3-confirm-title";heading.textContent="Confirm student action";
+  const desc=document.createElement("p");desc.id="admin3-confirm-description";desc.textContent=String(message||"Continue?");
+  const row=document.createElement("div");row.className="admin3-confirm-actions";
+  const cancel=document.createElement("button");cancel.type="button";cancel.textContent="Cancel / रद्द करें";cancel.className="admin3-confirm-cancel";
+  const yes=document.createElement("button");yes.type="button";yes.textContent="Confirm / पुष्टि करें";yes.className="admin3-confirm-yes";
+  row.append(cancel,yes);dialog.append(icon,heading,desc,row);shade.append(dialog);
+  let closed=false;
+  const keyHandler=event=>{
+   if(event.key==="Escape"){event.preventDefault();finish(false);return}
+   if(event.key==="Tab"){
+    if(event.shiftKey&&document.activeElement===cancel){event.preventDefault();yes.focus()}
+    else if(!event.shiftKey&&document.activeElement===yes){event.preventDefault();cancel.focus()}
+   }
+  };
+  function finish(result){
+   if(closed)return;
+   closed=true;
+   document.removeEventListener("keydown",keyHandler,true);
+   shade.remove();
+   activeConfirmation=null;
+   if(previousFocus?.isConnected&&typeof previousFocus.focus==="function")previousFocus.focus({preventScroll:true});
+   resolve(result);
+  }
+  cancel.onclick=()=>finish(false);
+  yes.onclick=()=>finish(true);
+  shade.onclick=event=>{if(event.target===shade)finish(false)};
+  document.addEventListener("keydown",keyHandler,true);
+  document.body.append(shade);
+  cancel.focus({preventScroll:true});
+ });
+ return activeConfirmation;
+}
+window.Admin3={mount,confirmApproval};
 })();
