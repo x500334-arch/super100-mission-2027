@@ -323,3 +323,15 @@ main:has(.workspace){max-width:none;padding:0!important}
  .workbody > .panel,.workbody > article{padding:16px}
  .workbody > .grid:not(.m3-chapters){grid-template-columns:1fr}
 }
+
+/* Quiet, intentional motion—not distracting during study */
+@keyframes m3-enter{from{opacity:.25;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:no-preference){
+ .m3-toprow{animation:m3-enter .48s ease both}
+ .modern-dashboard{animation:m3-enter .52s .1s ease both}
+ .dashgrid{animation:m3-enter .52s .18s ease both}
+ .m3-chapter-block{animation:m3-enter .56s .22s ease both}
+ .m3-toprow .heroart{animation:m3-breathe 7s ease-in-out infinite alternate}
+}
+@keyframes m3-breathe{from{opacity:.24;transform:rotate(-10deg) translateY(0)}to{opacity:.37;transform:rotate(-7deg) translateY(-8px)}}
+.m3-chapter-block .modern-chapter>small:first-of-type{display:none}
