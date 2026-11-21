@@ -81,3 +81,33 @@
 }
 @media(prefers-reduced-motion:reduce){.priority-topic-card{transition:none}.priority-topic-card:hover{transform:none}}
 @media print{.priority-controls,.priority-resource-actions,.priority-challenge{display:none!important}}
+
+
+/* Visible dashboard entry point — no more hunting for Priority Topics */
+.priority-quick{
+ display:flex;align-items:center;justify-content:space-between;gap:18px;
+ border-radius:17px;padding:18px 23px;margin:15px 0 0;
+ border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line));
+ background:linear-gradient(110deg,color-mix(in srgb,var(--tint) 82%,var(--panel)),var(--panel));
+ box-shadow:var(--m3-card-shadow)
+}
+.priority-quick-text>span{display:block;font-size:10px;font-weight:900;letter-spacing:.13em;color:var(--accent)}
+.priority-quick h3{font-size:20px;line-height:1.22;letter-spacing:-.035em;margin:5px 0 4px}
+.priority-quick p{font-size:12px;line-height:1.55;margin:4px 0;color:var(--ink)}
+.priority-quick p b{color:var(--accent)}
+.priority-quick small{font-size:10px;color:var(--muted);line-height:1.4}
+.priority-quick button{margin:0;flex-shrink:0;max-width:230px;padding:13px 17px;min-height:48px;border-radius:11px;background:var(--accent);color:#fff;border:0;font-size:12px;font-weight:840;box-shadow:0 7px 19px color-mix(in srgb,var(--accent) 20%,transparent)}
+.priority-quick button:hover{transform:translateY(-2px);box-shadow:0 11px 22px color-mix(in srgb,var(--accent) 26%,transparent)}
+.m3-toprow .dashhero .m3-hero-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.m3-toprow .dashhero .m3-hero-actions button{margin:0!important}
+.m3-toprow .dashhero .m3-hero-actions .m3-priority-cta{
+ background:#ffffff14!important;border:1px solid #ffffff85!important;color:#fff!important;
+ box-shadow:none!important;border-radius:12px;font-size:12px
+}
+.m3-toprow .dashhero .m3-hero-actions .m3-priority-cta:hover{background:#ffffff28!important}
+@media(max-width:700px){
+ .priority-quick{padding:16px 15px;align-items:stretch;flex-direction:column;gap:11px}
+ .priority-quick h3{font-size:18px}
+ .priority-quick button{max-width:none;width:100%}
+}
+@media(prefers-reduced-motion:reduce){.priority-quick button:hover{transform:none}}
