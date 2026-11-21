@@ -168,7 +168,7 @@ function mount(data){
   });
  };
  tabs.querySelectorAll("[data-tab]").forEach(btn=>{
-  btn.onclick=()=>{activate(btn.dataset.tab);tabs.scrollIntoView({behavior:"smooth",block:"nearest"})};
+  btn.onclick=()=>{activate(btn.dataset.tab)};
   btn.onkeydown=e=>{if(!["ArrowRight","ArrowLeft","Home","End"].includes(e.key))return;e.preventDefault();const at=keys.indexOf(btn.dataset.tab),next=e.key==="Home"?0:e.key==="End"?keys.length-1:(at+(e.key==="ArrowRight"?1:-1)+keys.length)%keys.length;const dest=tabs.querySelector('[data-tab="'+keys[next]+'"]');dest?.focus();activate(keys[next])};
  });
  overview.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>activate(b.dataset.goto));
