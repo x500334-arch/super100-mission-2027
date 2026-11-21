@@ -6,6 +6,9 @@ function mount(data){
  if(!profile?.admin||!profile?.approved)return;
  const area=document.querySelector(".workbody");
  if(!area||document.querySelector("#admin3-root"))return;
+ // Recover from stale drawer state that can lock the entire phone viewport.
+ window.Mobile4?.close();
+ document.body.classList.remove("mobile-drawer-open");
  if(lastAccount!==user?.id){lastTab="overview";lastAccount=user?.id||""}
  const title=[...area.children].find(el=>el.tagName==="H1"&&el.textContent.includes("Admin control"));
  if(!title)return;
@@ -71,6 +74,66 @@ function mount(data){
   const numbers=directory.querySelector('div[style*="grid-template-columns"]');
   if(numbers)numbers.classList.add("admin3-duplicate-stats");
   people.append(directory);
+ }
+ // Mobile approvals: keep the existing table for desktop/filters; use its
+ // original role-checked action buttons for phone cards to preserve RLS.
+ if(directory){
+  const tbody=directory.querySelector("#adminrows");
+  if(tbody){
+   const cards=document.createElement("div");
+   cards.id="admin3-mobile-students";cards.className="admin3-mobile-students";
+   const label=document.createElement("div");label.className="admin3-mobile-students-title";
+   const heading=document.createElement("h3");heading.textContent="Quick student approvals";
+   const description=document.createElement("p");description.textContent="Approve directly below — no sideways table scrolling.";
+   label.append(heading,description);cards.append(label);
+   const sorted=[...tbody.querySelectorAll("tr")].sort((a,b)=>Number(a.dataset.status==="approved")-Number(b.dataset.status==="approved"));
+   const links=[];
+   for(const row of sorted){
+    const cells=[...row.querySelectorAll("td")];
+    if(cells.length<7)continue;
+    const card=document.createElement("article");card.className="admin3-mobile-student-card";
+    const top=document.createElement("div");top.className="admin3-mobile-student-top";
+    const username=document.createElement("strong");username.textContent=(cells[0].textContent||"Student").trim();
+    const approved=row.dataset.status==="approved";
+    const badge=document.createElement("span");badge.className="admin3-mobile-student-status "+(approved?"approved":"pending");
+    badge.textContent=approved?"Approved":"Pending / blocked";
+    top.append(username,badge);card.append(top);
+    const progress=document.createElement("p");progress.className="admin3-mobile-student-progress";
+    progress.textContent=(cells[1].textContent||"0/14")+" chapters · "+(cells[2].textContent||"0")+" tests · "+(cells[4].textContent||"—")+" score";
+    card.append(progress);
+    const actions=document.createElement("div");actions.className="admin3-mobile-student-actions";
+    const details=document.createElement("button");details.type="button";details.className="admin3-mobile-student-report";
+    details.textContent="Student report";
+    details.onclick=()=>{const source=cells[0].querySelector("button");if(source)source.click()};
+    const approval=document.createElement("button");approval.type="button";approval.className="admin3-mobile-student-approve "+(approved?"block":"approve");
+    approval.textContent=approved?"Block student":"✓ Approve student";
+    approval.onclick=()=>{
+     if(approval.disabled)return;
+     // Original approve() function retains the confirmation and admin-only guard.
+     const source=cells[6].querySelector("button");
+     if(source)source.click();
+    };
+    actions.append(details,approval);card.append(actions);cards.append(card);
+    links.push({row,card});
+   }
+   const search=directory.querySelector("#adminsearch");
+   const status=directory.querySelector("#adminstatus");
+   const empty=document.createElement("p");empty.className="admin3-no-students";
+   empty.textContent="No students match this filter.";empty.hidden=true;cards.append(empty);
+   const sync=()=>{
+    let visible=0;
+    for(const {row,card} of links){card.hidden=row.hidden;if(!row.hidden)visible++}
+    empty.hidden=visible!==0;
+   };
+   search?.addEventListener("input",sync);
+   status?.addEventListener("change",sync);
+   const observer=new MutationObserver(sync);
+   observer.observe(tbody,{subtree:true,attributes:true,attributeFilter:["hidden"]});
+   sync();
+   const tableWrapper=tbody.closest("table")?.parentElement;
+   if(tableWrapper?.parentElement===directory)directory.insertBefore(cards,tableWrapper);
+   else directory.append(cards);
+  }
  }
  const legacyHeading=[...area.children].find(x=>x.tagName==="H2"&&x.textContent.trim()==="Students");
  if(legacyHeading)legacyHeading.remove();
