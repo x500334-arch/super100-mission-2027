@@ -121,6 +121,13 @@ function mount(progress){
  '<div id="priority-topic-list" class="priority-topic-grid"></div>'+
  '<section class="priority-challenge"><div class="priority-challenge-title"><div><span class="priority-kicker">7-DAY STUDY CAMPAIGN</span><h3>🏁 High-Priority Challenge / 7-दिन की चुनौती</h3><p>One focused topic each day, with notes and practice shortcuts.</p></div><span class="priority-challenge-graphic">07</span></div><div id="priority-challenge-body"></div></section>';
  (container||top).after(host);
+ if(top){
+  const teaser=document.createElement("div");teaser.id="priority-quick";teaser.className="priority-quick";
+  teaser.innerHTML='<div class="priority-quick-text"><span>🔥 HIGH-PRIORITY TOPICS · EXAM STRATEGY</span><h3>Know what to study first.</h3><p>Work & Pipes <b>10</b> · Mensuration <b>9</b> · Geometry <b>9</b> · Percentage <b>9</b> (out of 100 observed questions)</p><small>2024 + 2025 copies; not confirmed 2027 weightage</small></div><button id="priority-quick-open" type="button">Explore ranking & 7-day challenge ↗</button>';
+  top.after(teaser);
+  teaser.querySelector("#priority-quick-open").onclick=()=>host.scrollIntoView({behavior:"smooth",block:"start"});
+ }
+
  let filter="all",sorting="observed";
  function draw(){
   if(!host.isConnected||!user||user.id!==uid)return;
