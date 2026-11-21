@@ -127,8 +127,9 @@ function mount(data){
     for(const {row,card} of links){card.hidden=row.hidden;if(!row.hidden)visible++}
     empty.hidden=visible!==0;
    };
-   search?.addEventListener("input",sync);
-   status?.addEventListener("change",sync);
+   // Defer until the existing table filter has updated row.hidden.
+   search?.addEventListener("input",()=>queueMicrotask(sync));
+   status?.addEventListener("change",()=>queueMicrotask(sync));
    const observer=new MutationObserver(sync);
    observer.observe(tbody,{subtree:true,attributes:true,attributeFilter:["hidden"]});
    sync();
