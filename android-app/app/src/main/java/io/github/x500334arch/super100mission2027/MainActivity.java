@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class MainActivity extends Activity {
     private static final String SITE = "https://x500334-arch.github.io/super100-mission-2027/";
+    // Versioned launch URL prevents Android WebView from reusing an obsolete login screen.
+    private static final String LAUNCH_URL = SITE + "?native_rev=auth-screen-20261122-v2";
     private static final String TRUSTED_HOST = "x500334-arch.github.io";
     private static final String TRUSTED_PATH = "/super100-mission-2027/";
 
@@ -61,6 +63,10 @@ public final class MainActivity extends Activity {
         // Never disable SSL checks or expose a JavaScript-to-native bridge.
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);  // Required by the existing Supabase website.
+        // Always fetch current HTML/JS over HTTPS; this does not remove auth cookies,
+        // Supabase localStorage, offline challenge checkboxes or synced student data.
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.clearCache(true);
         settings.setDomStorageEnabled(true);  // Required for existing login/local storage.
         settings.setDatabaseEnabled(true);
         settings.setAllowFileAccess(false);
@@ -196,7 +202,7 @@ public final class MainActivity extends Activity {
         retryButton.setOnClickListener(v -> {
             failedMainFrame = false;
             showLoading("Connecting...");
-            webView.loadUrl(SITE);
+            webView.loadUrl(LAUNCH_URL);
         });
         loadingPanel.addView(retryButton);
 
@@ -207,7 +213,7 @@ public final class MainActivity extends Activity {
         showLoading("Opening your learning workspace...");
 
         if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
-            webView.loadUrl(SITE);
+            webView.loadUrl(LAUNCH_URL);
         }
     }
 
