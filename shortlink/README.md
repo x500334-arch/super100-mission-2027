@@ -4,13 +4,15 @@
 
 This directory is a **redirect-only short-link project**. No Supabase, PWA, student tests, PDF, OAuth callback, or Android APK origin is moved. Students visiting a short domain will receive a temporary 302 redirect to the original HTTPS GitHub Pages site, preserving the existing browser origin, Supabase session and installed PWA's scope. The original GitHub Pages URL remains available.
 
-> **Not live yet:** Neither Cloudflare nor Netlify project/subdomain is registered merely by adding these files. The user must connect a hosting-provider account and choose a project name. Availability of `s100mission.pages.dev` or `s100mission.netlify.app` is **not confirmed**.
+> **Chosen project name: `s-100` (shown as `S-100` in branding).** A matching Cloudflare Pages address would be `https://s-100.pages.dev/` **only if that project name is available and successfully deployed.**
+
+> **Not live yet:** Neither Cloudflare nor Netlify project/subdomain is registered merely by adding these files. The user must connect a hosting-provider account and choose a project name. Availability of `s-100.pages.dev` or `s-100.netlify.app` is **not confirmed**.
 
 ## Option A (recommended): Cloudflare Pages short URL
 
 1. In [Cloudflare Workers & Pages](https://dash.cloudflare.com/), create a **Pages** project; choose **Connect to Git**, and authorize GitHub.
 2. Choose repository `x500334-arch/super100-mission-2027`, production branch `main`.
-3. Choose a project name (e.g. `s100mission`, **subject to availability**). Cloudflare normally provides `<project>.pages.dev`.
+3. Choose a project name (e.g. `s-100`, **subject to availability**). Cloudflare normally provides `<project>.pages.dev`.
 4. In build settings leave the build command empty (no framework). Set **Root directory** to `shortlink/cloudflare` and **Build output directory** to `.` (or use repository root and build output directory `shortlink/cloudflare`).
 5. Deploy and verify that `https://<project>.pages.dev/` redirects to `https://x500334-arch.github.io/super100-mission-2027/`. Check `/register.html` and `/notes.html` too.
 6. Share **only the short HTTPS URL** with students. Keep the GitHub Pages origin unchanged.
@@ -22,7 +24,7 @@ Redirect syntax: https://developers.cloudflare.com/pages/configuration/redirects
 
 1. Create a Netlify project, choose **Import from Git**, connect this existing GitHub repository.
 2. Branch `main`; publish directory `shortlink/netlify`; no build command.
-3. Choose a site name (e.g. `s100mission`, **subject to availability**) to obtain `<site>.netlify.app`.
+3. Choose a site name (e.g. `s-100`, **subject to availability**) to obtain `<site>.netlify.app`.
 4. Deploy and verify both the root URL and `/register.html` redirect to GitHub Pages. The `302!` rules override the fallback `index.html`.
 5. Keep the original domain unchanged for logins, study sync and PWA installs.
 
