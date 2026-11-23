@@ -1,0 +1,3 @@
+# Netlify: forced temporary redirects (the ! overrides index.html fallback).
+/ https://x500334-arch.github.io/super100-mission-2027/ 302!
+/* https://x500334-arch.github.io/super100-mission-2027/:splat 302!

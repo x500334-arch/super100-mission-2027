@@ -1,0 +1,5 @@
+# Cloudflare Pages: safe browser redirect (keep original GitHub Pages/PWA/APK origin).
+# The Cloudflare project must publish THIS directory as static assets.
+# Root and registration/path routes redirect to existing GitHub Pages.
+/ https://x500334-arch.github.io/super100-mission-2027/ 302
+/* https://x500334-arch.github.io/super100-mission-2027/:splat 302
